@@ -14,7 +14,7 @@ namespace TestTask
             var url = "https://web-api/postmethod";
 
             using var client = new HttpClient();
-            var response = await client.PostAsync(url, data);
+            //var response = await client.PostAsync(url, data);
         }
     }
 }

@@ -1,50 +1,8 @@
-﻿CREATE PROCEDURE CreateTable
-
-AS
-	CREATE TABLE Candidates
-	(
-		PhoneNumber NVARCHAR(11) PRIMARY KEY NOT NULL,
-		Name NVARCHAR(max) NOT NULL,
-		Surname NVARCHAR(max) NOT NULL,
-		FathersName NVARCHAR(max),
-		Position NVARCHAR(max) NOT NULL,
-
-		FirstInterviewDate DATE NOT NULL,
-		InterviewerSurname NVARCHAR(max) NOT NULL,
-		InterviewerPosition NVARCHAR(max) NOT NULL,
-
-		DateToCompleteTask DATE NOT NULL,
-		DateWhenCompleteTask DATE,
-		StructureDirector NVARCHAR(max),
-		Score INT,
-	);
-RETURN 0
-
-CREATE PROCEDURE TakeTask
-	@Phone nvarchar(11),
-	@WhenTakeTask datetime,
-	@StructDirector nvarchar(max),
-	@Score int
-AS
-BEGIN
-	IF NOT EXISTS (SELECT * FROM Candidates Where PhoneNumber = @Phone)
-	return 0
-	ELSE
-	BEGIN
-	UPDATE Candidates
-	SET DateWhenCompleteTask = @WhenTakeTask
-	WHERE PhoneNumber = @Phone
-
-	UPDATE Candidates
-	SET StructureDirector = @StructDirector
-	WHERE PhoneNumber = @Phone
-
-	UPDATE Candidates
-	SET Score = @Score
-	WHERE PhoneNumber = @Phone
-RETURN 1
-END;
-END;
+﻿//
+-Добавить везде исключений и проверок !!!!
+-Оформить отчётик
+-Комментарии и описание
+//
 
 CREATE PROCEDURE AddCandidate
 	@Name nvarchar(max),
@@ -60,13 +18,14 @@ AS
 BEGIN
 	IF NOT EXISTS (SELECT * FROM Candidates Where PhoneNumber = @PhoneNumber)
 	BEGIN
-	INSERT INTO Candidates (Name, Surname, FathersName, PhoneNumber, Position, FirstInterviewDate, InterviewerPosition,InterviewerSurname, DateToCompleteTask)
-	VALUES (@Name, @Surname, @FathersName, @PhoneNumber, @Position, @FirstInterviewDate, @InterviewerPosition, @InterviewerSurname, @DateToComplete);
+	INSERT INTO Candidates (Name, Surname, FathersName, PhoneNumber, Position, FirstInterviewDate, InterviewerPosition,InterviewerSurname, DateToCompleteTask, TaskStatus)
+	VALUES (@Name, @Surname, @FathersName, @PhoneNumber, @Position, @FirstInterviewDate, @InterviewerPosition, @InterviewerSurname, @DateToComplete, N'Задание получено');
 	return 1
 	END;
 	ELSE
 	return 0
 END;
+
 
 CREATE PROCEDURE CountScore
 	@phone nvarchar(11)
@@ -106,3 +65,59 @@ AS
 END;
 
 
+
+CREATE PROCEDURE CreateTable
+
+AS
+	CREATE TABLE Candidates
+	(
+		PhoneNumber NVARCHAR(11) PRIMARY KEY NOT NULL,
+		Name NVARCHAR(max) NOT NULL,
+		Surname NVARCHAR(max) NOT NULL,
+		FathersName NVARCHAR(max),
+		Position NVARCHAR(max) NOT NULL,
+
+		FirstInterviewDate DATETIME NOT NULL,
+		InterviewerSurname NVARCHAR(max) NOT NULL,
+		InterviewerPosition NVARCHAR(max) NOT NULL,
+
+		DateToCompleteTask DATETIME NOT NULL,
+		DateWhenCompleteTask DATETIME,
+		StructureDirector NVARCHAR(max),
+		ResultScore INT,
+		TaskStatus NVARCHAR(max),
+		Score INT,
+	);
+RETURN 0
+
+
+
+CREATE PROCEDURE TakeTask
+	@Phone nvarchar(11),
+	@WhenTakeTask datetime,
+	@StructDirector nvarchar(max),
+	@Score int
+AS
+BEGIN
+	IF NOT EXISTS (SELECT * FROM Candidates Where PhoneNumber = @Phone)
+	return 0
+	ELSE
+	BEGIN
+	UPDATE Candidates
+	SET DateWhenCompleteTask = @WhenTakeTask
+	WHERE PhoneNumber = @Phone
+
+	UPDATE Candidates
+	SET StructureDirector = @StructDirector
+	WHERE PhoneNumber = @Phone
+
+	UPDATE Candidates
+	SET Score = @Score
+	WHERE PhoneNumber = @Phone
+
+	UPDATE Candidates
+	SET TaskStatus = N'Заданию выставлена оценка сотрудником'
+	WHERE PhoneNumber = @Phone
+RETURN 1
+END;
+END;

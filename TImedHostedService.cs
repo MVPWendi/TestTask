@@ -28,7 +28,9 @@ public class TimedHostedService : IHostedService, IDisposable
         foreach (var candidate in Database.GetCandidatesWhoDontDoTask())
         {
             _logger.LogInformation($"CAND: {candidate.DateToCompleteTask}");
-            if ((DateTime.Now - candidate.DateToCompleteTask).TotalSeconds > 0)
+
+            // 28.07.22 - 06.08.22 = 
+            if (DateTime.Now > candidate.DateToCompleteTask)
             {
                 _logger.LogInformation("Set Expire");
                 Database.SetExpiredTask(candidate);

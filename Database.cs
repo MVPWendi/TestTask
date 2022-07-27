@@ -46,6 +46,11 @@ namespace TestTask
                 {
                     command.ExecuteNonQuery();
                 }
+                sqlExpression = $"UPDATE Candidates SET DateWhenCompleteTask = '2000-01-01T00:00:00' WHERE PhoneNumber = '{candidate.PhoneNumber}'";
+                using (var command = new SqlCommand(sqlExpression, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
             }
         }
         public static List<Candidate> GetCandidatesWhoDontDoTask()
@@ -70,6 +75,11 @@ namespace TestTask
             }
             return candidates;
         }
+
+
+        //Самая неудачная вещь во всём приложении, видимо за день устал и под конец уже все мысли путаться начали, ничего лучше не придумал
+
+        //Ищеет возвращает списко кандитатов, во временных рамках + считает результирующую оценку, необходима для генерации конечного отчёта
         public static List<Candidate> GetCandidates(DateTime DateOne, DateTime DateTwo)
         {
             List<Candidate> candidates = new List<Candidate>();
@@ -96,7 +106,11 @@ namespace TestTask
                         interviewerSurname = (string)reader.GetValue(6);
                         interviewerPosition = (string)reader.GetValue(7);
                         DateToComplete = (DateTime)reader.GetValue(8);
-                        DateWhenComplete = (DateTime)reader.GetValue(9);
+                        if (reader.GetValue(9) != DBNull.Value)
+                        {
+                            DateWhenComplete = (DateTime)reader.GetValue(9);
+                        }
+                        
                         
                         if(reader.GetValue(10)!=DBNull.Value)
                         {
@@ -126,8 +140,12 @@ namespace TestTask
                             DateWhenComplete,
                             (byte)Score
                             );
-                        
-                        candidate.ResultScore = (byte)UseStoredProcedure("CountScore", new List<CommandParameter> { new CommandParameter("phone", phone, System.Data.SqlDbType.NVarChar) });
+
+                        if (reader.GetValue(9) != DBNull.Value)
+                        {
+                            candidate.ResultScore = (byte)UseStoredProcedure("CountScore", new List<CommandParameter> { new CommandParameter("phone", phone, System.Data.SqlDbType.NVarChar) });
+                        }
+                        candidate.TaskStatus = TaskStatus;
                         candidates.Add(candidate);
                     }
                 }

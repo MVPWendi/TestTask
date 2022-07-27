@@ -42,9 +42,9 @@ namespace TestTask.Controllers
         /// </summary>
         [HttpPost]
         [Route("[controller]/GetResult")]
-        public string GetResult()
+        public string GetResult(DateTime DateOne, DateTime DateTwo)
         {
-            var candidates = Database.GetCandidates(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(30));
+            var candidates = Database.GetCandidates(DateOne, DateTwo);
             return JsonConvert.SerializeObject(candidates);
         }
 
@@ -56,6 +56,7 @@ namespace TestTask.Controllers
         public void AddCandidate(string phoneNumber, DateTime whenTakeTask, string structDirector, byte score)
         {
             Database.UseStoredProcedure("TakeTask", CommandParameter.GetParametersForTask(phoneNumber, whenTakeTask, structDirector, score));
+            HTTP.SendHTTP(phoneNumber, "заданию выставлена оценка сотрудником");
         }
         /// <summary>
         /// Метод для добавления нового кандидата

@@ -28,6 +28,12 @@
         public byte ResultScore;
 
         public string TaskStatus;
+
+        public Candidate(string phone, DateTime timeComplete)
+        {
+            PhoneNumber = phone;
+            DateWhenCompleteTask = timeComplete;
+        }
         public Candidate(string name, string surname, string fathersName, string phoneNumber, string position, DateTime firstInterviewDate, string interviewerSurname, string interviewerPosition, byte daysToCompleteTask)
         {
             if(firstInterviewDate>DateTime.Now || phoneNumber.Length!=11 || daysToCompleteTask==0)

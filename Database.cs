@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.Extensions.Logging;
+using System.Data;
 using System.Data.SqlClient;
 using TestTask.Model;
 
@@ -30,7 +31,45 @@ namespace TestTask
             }
         }
 
+        public static void SetExpiredTask(Candidate candidate)
+        {
+            string sqlExpression = $"UPDATE Candidates SET ResultScore = 0 WHERE PhoneNumber = '{candidate.PhoneNumber}'";
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (var command = new SqlCommand(sqlExpression, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+                sqlExpression = $"UPDATE Candidates SET TaskStatus = N'Истекло время выполнения задания' WHERE PhoneNumber = '{candidate.PhoneNumber}'";
+                using (var command = new SqlCommand(sqlExpression, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        public static List<Candidate> GetCandidatesWhoDontDoTask()
+        {
+            List<Candidate> candidates = new List<Candidate>();
+            string sqlExpression = $"SELECT * FROM Candidates WHERE DateWhenCompleteTask IS NULL";
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+                SqlDataReader reader = command.ExecuteReader();
 
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) // построчно считываем данные
+                    {
+                        candidates.Add(new Candidate((string)reader.GetValue(0), (DateTime)reader.GetValue(8)));
+                    }
+                }
+
+                reader.Close();
+            }
+            return candidates;
+        }
         public static List<Candidate> GetCandidates(DateTime DateOne, DateTime DateTwo)
         {
             List<Candidate> candidates = new List<Candidate>();
@@ -45,23 +84,34 @@ namespace TestTask
                 {
                     while (reader.Read()) // построчно считываем данные
                     {
-                        string phone = (string)reader.GetValue(0);
-                        string name = (string)reader.GetValue(1);
-                        string surname = (string)reader.GetValue(2);
-                        string fathersname = (string)reader.GetValue(3);
-                        string position = (string)reader.GetValue(4);
-                        DateTime firstinterview = (DateTime)reader.GetValue(5);
-                        string interviewerSurname = (string)reader.GetValue(6);
-                        string interviewerPosition = (string)reader.GetValue(7);
-                        DateTime DateToComplete = (DateTime)reader.GetValue(8);
-                        DateTime DateWhenComplete = (DateTime)reader.GetValue(9);
-                        string StructureDirector = (string)reader.GetValue(10);
+                        int Score = 1;
+                        string phone="", name = "", surname = "", fathersname = "", position = "", interviewerSurname = "", interviewerPosition = "", StructureDirector = "";
+                        DateTime firstinterview= (DateTime)reader.GetValue(5), DateToComplete= (DateTime)reader.GetValue(5), DateWhenComplete= (DateTime)reader.GetValue(5);
+                        phone = (string)reader.GetValue(0);
+                        name = (string)reader.GetValue(1);
+                        surname = (string)reader.GetValue(2);
+                        fathersname = (string)reader.GetValue(3);
+                        position = (string)reader.GetValue(4);
+                        firstinterview = (DateTime)reader.GetValue(5);
+                        interviewerSurname = (string)reader.GetValue(6);
+                        interviewerPosition = (string)reader.GetValue(7);
+                        DateToComplete = (DateTime)reader.GetValue(8);
+                        DateWhenComplete = (DateTime)reader.GetValue(9);
+                        
+                        if(reader.GetValue(10)!=DBNull.Value)
+                        {
+                            StructureDirector = (string)reader.GetValue(10);
+                        }
                         if(reader.GetValue(11)!=DBNull.Value)
                         {
                             int ResultScore = (int)reader.GetValue(11);
                         }                     
                         string TaskStatus = (string)reader.GetValue(12);
-                        int Score = (int)reader.GetValue(13);
+                        if (reader.GetValue(13) != DBNull.Value)
+                        {
+                            Score = (int)reader.GetValue(13);
+                        }
+                        
                         Candidate candidate = new Candidate(
                             name,
                             surname,
@@ -76,6 +126,7 @@ namespace TestTask
                             DateWhenComplete,
                             (byte)Score
                             );
+                        
                         candidate.ResultScore = (byte)UseStoredProcedure("CountScore", new List<CommandParameter> { new CommandParameter("phone", phone, System.Data.SqlDbType.NVarChar) });
                         candidates.Add(candidate);
                     }

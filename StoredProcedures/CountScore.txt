@@ -1,4 +1,4 @@
---- Процедура подсчёта результирующей оценки
+--- РџСЂРѕС†РµРґСѓСЂР° РїРѕРґСЃС‡С‘С‚Р° СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµР№ РѕС†РµРЅРєРё
 
 CREATE PROCEDURE CountScore
 	@phone nvarchar(11)
@@ -22,15 +22,15 @@ AS
 		return 500
 	ELSE
 		BEGIN
-	    IF DATEDIFF(DAY, @WhenShouldComplete, @WhenComplete)>0 ---Если закончил позже чем должен был
+	    IF DATEDIFF(DAY, @WhenShouldComplete, @WhenComplete)>0 ---Г…Г±Г«ГЁ Г§Г ГЄГ®Г­Г·ГЁГ« ГЇГ®Г§Г¦ГҐ Г·ГҐГ¬ Г¤Г®Г«Г¦ГҐГ­ ГЎГ»Г«
 			BEGIN
 			RETURN 0;
 			END
 		ELSE
 			BEGIN
-			SET @DayForOneValue = DATEDIFF(DAY,@WhenGive, @WhenShouldComplete)/5; --- считаем "ценность одного дня"
+			SET @DayForOneValue = DATEDIFF(DAY,@WhenGive, @WhenShouldComplete)/5; --- Г±Г·ГЁГІГ ГҐГ¬ "Г¶ГҐГ­Г­Г®Г±ГІГј Г®Г¤Г­Г®ГЈГ® Г¤Г­Гї"
 
-			SET @TempTimeScore = CEILING(6 - CEILING(DATEDIFF(DAY, @WhenGive, @WhenComplete)/@DayForOneValue)); --- считаем оценку за время
+			SET @TempTimeScore = CEILING(6 - CEILING(DATEDIFF(DAY, @WhenGive, @WhenComplete)/@DayForOneValue)); --- Г±Г·ГЁГІГ ГҐГ¬ Г®Г¶ГҐГ­ГЄГі Г§Г  ГўГ°ГҐГ¬Гї
 			SET @ResultScore = CEILING((@Score+@TempTimeScore)/2);
 			RETURN @ResultSCore;
 			END;

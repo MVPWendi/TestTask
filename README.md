@@ -20,7 +20,7 @@ BEGIN
 	VALUES (@Name, @Surname, @FathersName, @PhoneNumber, @Position, @FirstInterviewDate, @InterviewerPosition, @InterviewerSurname, @DateToComplete, N'Задание получено');
 	return 1
 	END;
-	ELSE
+    ELSE
 	return 0
 END;
 

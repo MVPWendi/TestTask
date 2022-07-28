@@ -1,6 +1,6 @@
 
 
---- Процедура добавления нового соискателя
+--- РџСЂРѕС†РµРґСѓСЂР° РґРѕР±Р°РІР»РµРЅРёСЏ РЅРѕРІРѕРіРѕ СЃРѕРёСЃРєР°С‚РµР»СЏ
 CREATE PROCEDURE AddCandidate
 	@Name nvarchar(max),
 	@Surname nvarchar(max),
@@ -16,7 +16,7 @@ BEGIN
 	IF NOT EXISTS (SELECT * FROM Candidates Where PhoneNumber = @PhoneNumber)
 	BEGIN
 	INSERT INTO Candidates (Name, Surname, FathersName, PhoneNumber, Position, FirstInterviewDate, InterviewerPosition,InterviewerSurname, DateToCompleteTask, TaskStatus)
-	VALUES (@Name, @Surname, @FathersName, @PhoneNumber, @Position, @FirstInterviewDate, @InterviewerPosition, @InterviewerSurname, @DateToComplete, N'Задание получено');
+	VALUES (@Name, @Surname, @FathersName, @PhoneNumber, @Position, @FirstInterviewDate, @InterviewerPosition, @InterviewerSurname, @DateToComplete, N'Р—Р°РґР°РЅРёРµ РїРѕР»СѓС‡РµРЅРѕ');
 	return 1
 	END;
 	ELSE

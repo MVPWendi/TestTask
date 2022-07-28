@@ -18,7 +18,6 @@ namespace TestTask.Controllers
         }
 
 
-        // 2022-07-27T00:00:00
         /// <summary>
         /// Метод для создания таблицы (тоже для тестов)
         /// </summary>

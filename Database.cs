@@ -65,7 +65,7 @@ namespace TestTask
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read()) // построчно считываем данные
+                    while (reader.Read()) 
                     {
                         candidates.Add(new Candidate((string)reader.GetValue(0), (DateTime)reader.GetValue(8)));
                     }

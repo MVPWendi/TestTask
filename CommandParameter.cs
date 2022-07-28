@@ -25,16 +25,6 @@ namespace TestTask
             list.Add(new CommandParameter("StructDirector", structDirector, SqlDbType.NVarChar));
             return list;
         }
-
-        public static List<CommandParameter> GetParametersFor(string phone, DateTime date, string structDirector, byte score)
-        {
-            var list = new List<CommandParameter>();
-            list.Add(new CommandParameter("Phone", phone, SqlDbType.NVarChar));
-            list.Add(new CommandParameter("Date", date, SqlDbType.DateTime));
-            list.Add(new CommandParameter("Score", score, SqlDbType.Int));
-            list.Add(new CommandParameter("StructDirector", structDirector, SqlDbType.NVarChar));
-            return list;
-        }
         public static List<CommandParameter> GetParametersForNewUser(Candidate candidate)
         {
             var list = new List<CommandParameter>();

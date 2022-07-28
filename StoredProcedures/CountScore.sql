@@ -1,5 +1,3 @@
---- Процедура подсчёта результирующей оценки
-
 CREATE PROCEDURE CountScore
 	@phone nvarchar(11)
 AS
@@ -30,7 +28,10 @@ AS
 			BEGIN
 			SET @DayForOneValue = DATEDIFF(DAY,@WhenGive, @WhenShouldComplete)/5; --- считаем "ценность одного дня"
 
-			SET @TempTimeScore = CEILING(6 - CEILING(DATEDIFF(DAY, @WhenGive, @WhenComplete)/@DayForOneValue)); --- считаем оценку за время
+			IF @DayForOneValue = 0
+				SET @TempTimeScore = 5;
+			ELSE
+				SET @TempTimeScore = CEILING(6 - CEILING(DATEDIFF(DAY, @WhenGive, @WhenComplete)/@DayForOneValue)); --- считаем оценку за время			
 			SET @ResultScore = CEILING((@Score+@TempTimeScore)/2);
 			RETURN @ResultSCore;
 			END;

@@ -56,11 +56,11 @@ namespace TestTask
         public static List<Candidate> GetCandidatesWhoDontDoTask()
         {
             List<Candidate> candidates = new List<Candidate>();
-            string sqlExpression = $"SELECT * FROM Candidates WHERE DateWhenCompleteTask IS NULL";
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
+                SqlCommand command = new SqlCommand("GetCandidates", connection);
+                command.CommandType = CommandType.StoredProcedure;
                 SqlDataReader reader = command.ExecuteReader();
 
                 if (reader.HasRows)

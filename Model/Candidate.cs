@@ -9,8 +9,6 @@
         public string FathersName { get; private set; }
         public string PhoneNumber { get; private set; }
         public string Position { get; private set; }
-
-
         public DateTime FirstInterviewDate { get; private set; }
         public string InterviewerSurname { get; private set; }//Фамилия интервьюера
         public string InterviewerPosition { get; private set; } //Должность интервьюера
@@ -23,9 +21,9 @@
 
         public string StructureDirector { get; private set; }// фамилия, кто принял задание
         public DateTime DateWhenCompleteTask { get; private set; }//когда принято задание
-        public byte Score { get; private set; } //оценка от руководителя
+        public int Score { get; private set; } //оценка от руководителя
 
-        public byte ResultScore;
+        public int ResultScore;
 
         public string TaskStatus;
 

@@ -20,7 +20,7 @@ namespace TestTask.Controllers
 
         // 2022-07-27T00:00:00
         /// <summary>
-        /// Метод для проверки оценки (для тестов)
+        /// Метод для создания таблицы (тоже для тестов)
         /// </summary>
         [HttpPost]
         [Route("[controller]/CreateTable")]
@@ -44,8 +44,24 @@ namespace TestTask.Controllers
         [Route("[controller]/GetResult")]
         public string GetResult(DateTime DateOne, DateTime DateTwo)
         {
-            var candidates = Database.GetCandidates(DateOne, DateTwo);
-            return JsonConvert.SerializeObject(candidates);
+            try
+            {
+                var candidates = Database.GetCandidates(DateOne, DateTwo);
+                foreach (var cand in candidates)
+                {
+                    if(cand.DateWhenCompleteTask==cand.FirstInterviewDate)
+                    {
+                        cand.ResultScore = -1;
+                    }
+                }
+                return JsonConvert.SerializeObject(candidates);
+            }
+            catch(Exception ex)
+            {
+                Response.StatusCode = 500;
+                _logger.LogInformation(ex.Message);
+                return "Произошла ошибка";
+            }
         }
 
         /// <summary>
@@ -55,8 +71,20 @@ namespace TestTask.Controllers
         [Route("[controller]/TakeTask")]
         public void AddCandidate(string phoneNumber, DateTime whenTakeTask, string structDirector, byte score)
         {
-            Database.UseStoredProcedure("TakeTask", CommandParameter.GetParametersForTask(phoneNumber, whenTakeTask, structDirector, score));
-            HTTP.SendHTTP(phoneNumber, "заданию выставлена оценка сотрудником");
+            try
+            {
+                var value = Database.UseStoredProcedure("TakeTask", CommandParameter.GetParametersForTask(phoneNumber, whenTakeTask, structDirector, score));
+                if(value==0)
+                {
+                    throw new Exception();
+                }
+                HTTP.SendHTTP(phoneNumber, "заданию выставлена оценка сотрудником");
+            }
+            catch(Exception e)
+            {
+                Response.StatusCode = 500;
+                _logger.LogInformation(e.Message);
+            }
         }
         /// <summary>
         /// Метод для добавления нового кандидата
@@ -76,6 +104,7 @@ namespace TestTask.Controllers
             }
             catch(Exception e)
             {
+                Response.StatusCode = 500;
                 _logger.LogInformation(e.Message);
             }
 

@@ -14,6 +14,8 @@ namespace TestTask
             var url = "https://web-api/postmethod";
 
             using var client = new HttpClient();
+
+            //Вот тут идёт запрос, надо убрать коментарий, для тестов очень мешал
             //var response = await client.PostAsync(url, data);
         }
     }

@@ -5,14 +5,15 @@ using TestTask.Model;
 namespace TestTask.Controllers
 {
     [ApiController]
-    
-    public class API : ControllerBase
+    [Route("[controller]/[action]")]
+    public class APIController : ControllerBase
     {
 
 
-        private readonly ILogger<API> _logger;
+        private readonly ILogger<APIController> _logger;
 
-        public API(ILogger<API> logger)
+        
+        public APIController(ILogger<APIController> logger)
         {
             _logger = logger;
         }
@@ -22,7 +23,6 @@ namespace TestTask.Controllers
         /// Метод для создания таблицы (тоже для тестов)
         /// </summary>
         [HttpPost]
-        [Route("[controller]/CreateTable")]
         public void CreateTable()
         {
             Database.UseStoredProcedure("CreateTable");
@@ -31,7 +31,6 @@ namespace TestTask.Controllers
         /// Метод для проверки оценки (для тестов)
         /// </summary>
         [HttpPost]
-        [Route("[controller]/CountScore")]
         public int CountScore(string phoneNumber)
         {
             return Database.UseStoredProcedure("CountScore", new List<CommandParameter> { new CommandParameter("phone", phoneNumber, System.Data.SqlDbType.NVarChar) });
@@ -40,7 +39,6 @@ namespace TestTask.Controllers
         /// Метод для получения отчёта
         /// </summary>
         [HttpPost]
-        [Route("[controller]/GetResult")]
         public string GetResult(DateTime DateOne, DateTime DateTwo)
         {
             try
@@ -67,8 +65,7 @@ namespace TestTask.Controllers
         /// Метод для обновления кандидата
         /// </summary>
         [HttpPost]
-        [Route("[controller]/TakeTask")]
-        public void AddCandidate(string phoneNumber, DateTime whenTakeTask, string structDirector, byte score)
+        public void UpdateCandidate(string phoneNumber, DateTime whenTakeTask, string structDirector, byte score)
         {
             try
             {
@@ -89,7 +86,6 @@ namespace TestTask.Controllers
         /// Метод для добавления нового кандидата
         /// </summary>
         [HttpPost]
-        [Route("[controller]/addcandidate")]
         public void AddCandidate(string name, string surname, string fathersName, string phoneNumber, string position, DateTime firstInterviewDate, string interviewerSurname, string interviewerPosition, byte daysToCompleteTask)
         {
             try

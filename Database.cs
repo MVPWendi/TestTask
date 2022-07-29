@@ -97,33 +97,33 @@ namespace TestTask
                         int Score = 1;
                         string phone="", name = "", surname = "", fathersname = "", position = "", interviewerSurname = "", interviewerPosition = "", StructureDirector = "";
                         DateTime firstinterview= (DateTime)reader.GetValue(5), DateToComplete= (DateTime)reader.GetValue(5), DateWhenComplete= (DateTime)reader.GetValue(5);
-                        phone = (string)reader.GetValue(0);
-                        name = (string)reader.GetValue(1);
-                        surname = (string)reader.GetValue(2);
-                        fathersname = (string)reader.GetValue(3);
-                        position = (string)reader.GetValue(4);
-                        firstinterview = (DateTime)reader.GetValue(5);
-                        interviewerSurname = (string)reader.GetValue(6);
-                        interviewerPosition = (string)reader.GetValue(7);
-                        DateToComplete = (DateTime)reader.GetValue(8);
-                        if (reader.GetValue(9) != DBNull.Value)
+                        phone = (string)reader["PhoneNumber"];
+                        name = (string)reader["Name"];
+                        surname = (string)reader["Surname"];
+                        fathersname = (string)reader["FathersName"];
+                        position = (string)reader["Position"];
+                        firstinterview = (DateTime)reader["FirstInterviewDate"];
+                        interviewerSurname = (string)reader["InterviewerSurname"];
+                        interviewerPosition = (string)reader["InterviewerPosition"];
+                        DateToComplete = (DateTime)reader["DateToCompleteTask"];
+                        if (reader["DateWhenCompleteTask"] != DBNull.Value)
                         {
-                            DateWhenComplete = (DateTime)reader.GetValue(9);
+                            DateWhenComplete = (DateTime)reader["DateWhenCompleteTask"];
                         }
                         
                         
-                        if(reader.GetValue(10)!=DBNull.Value)
+                        if(reader["StructureDirector"] != DBNull.Value)
                         {
-                            StructureDirector = (string)reader.GetValue(10);
+                            StructureDirector = (string)reader["StructureDirector"];
                         }
-                        if(reader.GetValue(11)!=DBNull.Value)
+                        if(reader["ResultScore"] != DBNull.Value)
                         {
-                            int ResultScore = (int)reader.GetValue(11);
+                            int ResultScore = (int)reader["ResultScore"];
                         }                     
-                        string TaskStatus = (string)reader.GetValue(12);
-                        if (reader.GetValue(13) != DBNull.Value)
+                        string TaskStatus = (string)reader["TaskStatus"];
+                        if (reader["Score"] != DBNull.Value)
                         {
-                            Score = (int)reader.GetValue(13);
+                            Score = (int)reader["Score"];
                         }
                         
                         Candidate candidate = new Candidate(
@@ -141,8 +141,9 @@ namespace TestTask
                             (byte)Score
                             );
 
-                        if (reader.GetValue(9) != DBNull.Value)
+                        if (reader["ResultScore"] != DBNull.Value)
                         {
+                            
                             candidate.ResultScore = (byte)UseStoredProcedure("CountScore", new List<CommandParameter> { new CommandParameter("phone", phone, System.Data.SqlDbType.NVarChar) });
                         }
                         candidate.TaskStatus = TaskStatus;

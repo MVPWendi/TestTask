@@ -1,6 +1,4 @@
---- Процедура вызывается, когда челвоек принимает задание и выставляет оценку
-
-CREATE PROCEDURE TakeTask
+﻿CREATE PROCEDURE TakeTask
 	@Phone nvarchar(11),
 	@WhenTakeTask datetime,
 	@StructDirector nvarchar(max),
@@ -12,19 +10,7 @@ BEGIN
 	ELSE
 	BEGIN
 	UPDATE Candidates
-	SET DateWhenCompleteTask = @WhenTakeTask
-	WHERE PhoneNumber = @Phone
-
-	UPDATE Candidates
-	SET StructureDirector = @StructDirector
-	WHERE PhoneNumber = @Phone
-
-	UPDATE Candidates
-	SET Score = @Score
-	WHERE PhoneNumber = @Phone
-
-	UPDATE Candidates
-	SET TaskStatus = N'Заданию выставлена оценка сотрудником'
+	SET DateWhenCompleteTask = @WhenTakeTask, StructureDirector = @StructDirector, Score = @Score, TaskStatus = N'Заданию выставлена оценка сотрудником'
 	WHERE PhoneNumber = @Phone
 RETURN 1
 END;
